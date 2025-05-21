@@ -8,7 +8,7 @@
     :root {
       --gradient-border: linear-gradient(135deg, #FF7FBF, #9B59B6, #5DADE2);
       --panel-bg: #FFFFFF;
-      --display-bg: #E8DAEF;       /* Visor em tom de lavanda pastel para destaque */
+      --display-bg: #E8DAEF;       /* Visor em lavanda pastel */
       --btn-red: #FF4F4F;
       --btn-pink: #FFC0CB;
       --btn-purple: #D2B4DE;       /* Operadores em roxo pastel */
@@ -34,7 +34,7 @@
       background: var(--panel-bg);
       border-radius: 24px;
       padding: 20px;
-      width: 320px;
+      width: 340px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
     .display {
@@ -76,8 +76,9 @@
       opacity: 0.9;
     }
     #clearBtn { background: var(--btn-red); }
-    button[data-val] { background: var(--btn-pink); color: var(--text-dark); }
+    button[data-val]:not(#spaceBtn) { background: var(--btn-pink); color: var(--text-dark); }
     button[data-op] { background: var(--btn-purple); }
+    #spaceBtn { background: #ffffff; color: var(--text-dark); border: 2px dashed var(--btn-pink); }
     #evalBtn { background: var(--btn-equal); grid-column: span 2; }
   </style>
 </head>
@@ -111,6 +112,7 @@
 
         <button data-val="0">0</button>
         <button data-val=".">.</button>
+        <button id="spaceBtn">␣</button>
         <button id="evalBtn">=</button>
       </div>
     </div>
@@ -134,29 +136,26 @@
         dispRes.textContent = expr;
       }
 
-      // Botões de dígitos e parênteses
-      document.querySelectorAll('button[data-val]').forEach(btn => {
-        btn.addEventListener('click', () => updateExpr(btn.dataset.val));
-      });
-      // Botões de operadores
-      document.querySelectorAll('button[data-op]').forEach(btn => {
-        btn.addEventListener('click', () => updateExpr(btn.dataset.op));
-      });
-      // Botão C (limpar)
       document.getElementById('clearBtn').addEventListener('click', () => {
         expr = '';
         updateDisplays('', '0');
       });
-      // Botão = (avaliar)
+      document.querySelectorAll('button[data-val]:not(#spaceBtn)').forEach(btn => {
+        btn.addEventListener('click', () => updateExpr(btn.dataset.val));
+      });
+      document.querySelectorAll('button[data-op]').forEach(btn => {
+        btn.addEventListener('click', () => updateExpr(btn.dataset.op));
+      });
+      document.getElementById('spaceBtn').addEventListener('click', () => {
+        updateExpr(' ');
+      });
       document.getElementById('evalBtn').addEventListener('click', () => {
         if (!expr) return;
         const trimmed = expr.trim();
         let postfix;
-        // se já contém espaços, assume RPN pura
         if (trimmed.includes(' ')) {
           postfix = trimmed;
         } else {
-          // senão converte infixo → RPN
           postfix = toPostfix(trimmed);
         }
         const result = evalRpn(postfix);
