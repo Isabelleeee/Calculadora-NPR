@@ -8,10 +8,10 @@
     :root {
       --gradient-border: linear-gradient(135deg, #FF7FBF, #9B59B6, #5DADE2);
       --panel-bg: #FFFFFF;
-      --display-bg: #E8DAEF;       
+      --display-bg: #E8DAEF;       /* Visor em tom de lavanda pastel para destaque */
       --btn-red: #FF4F4F;
       --btn-pink: #FFC0CB;
-      --btn-purple: #D2B4DE;       
+      --btn-purple: #D2B4DE;       /* Operadores em roxo pastel */
       --btn-equal: #5DADE2;
       --text-dark: #333333;
       --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -100,7 +100,7 @@
         <button data-op="*">×</button>
 
         <button data-val="4">4</button>
-        <button data-val="5">5</nutton>
+        <button data-val="5">5</button>
         <button data-val="6">6</button>
         <button data-op="-">−</button>
 
@@ -134,19 +134,31 @@
         dispRes.textContent = expr;
       }
 
+      // Botões de dígitos e parênteses
       document.querySelectorAll('button[data-val]').forEach(btn => {
         btn.addEventListener('click', () => updateExpr(btn.dataset.val));
       });
+      // Botões de operadores
       document.querySelectorAll('button[data-op]').forEach(btn => {
         btn.addEventListener('click', () => updateExpr(btn.dataset.op));
       });
+      // Botão C (limpar)
       document.getElementById('clearBtn').addEventListener('click', () => {
         expr = '';
         updateDisplays('', '0');
       });
+      // Botão = (avaliar)
       document.getElementById('evalBtn').addEventListener('click', () => {
         if (!expr) return;
-        const postfix = toPostfix(expr);
+        const trimmed = expr.trim();
+        let postfix;
+        // se já contém espaços, assume RPN pura
+        if (trimmed.includes(' ')) {
+          postfix = trimmed;
+        } else {
+          // senão converte infixo → RPN
+          postfix = toPostfix(trimmed);
+        }
         const result = evalRpn(postfix);
         updateDisplays(postfix.trim(), result);
         expr = String(result);
