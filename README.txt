@@ -12,7 +12,7 @@ rpn-project/
 ├── index.html        # Interface web e integração com WebAssembly
 ├── rpn.js            # Glue-code gerado pelo Emscripten
 ├── rpn.wasm          # WebAssembly module
-└── README.txt         # Documentação (este arquivo)
+└── README.txt         # Documentação 
 
 ---
 
